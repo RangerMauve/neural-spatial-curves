@@ -171,4 +171,4 @@ cython_debug/
 .pypirc
 
 # Model files
-model.keras
+*.keras
