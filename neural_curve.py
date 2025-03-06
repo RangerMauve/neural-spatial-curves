@@ -8,8 +8,8 @@ np.random.seed(42)
 tf.random.set_seed(42)
 
 dimensions = 2
-hidden_size_1 = 32
-hidden_size_2 = 16
+hidden_size_1 = 64
+hidden_size_2 = 32
 encoding_size = 1
 
 
@@ -22,7 +22,7 @@ def create_and_train_autoencoder():
     encoded_hidden_1 = Dense(hidden_size_1, activation='relu')(input_layer)
     encoded_hidden_2 = Dense(
         hidden_size_2, activation='relu')(encoded_hidden_1)
-    encoded = Dense(encoding_size, activation='relu')(encoded_hidden_2)
+    encoded = Dense(encoding_size, activation='linear')(encoded_hidden_2)
 
     encoder = Model(input_layer, encoded)
 
@@ -30,7 +30,7 @@ def create_and_train_autoencoder():
     decoded_hidden_1 = Dense(hidden_size_2, activation='relu')(decoder_input)
     decoded_hidden_2 = Dense(
         hidden_size_1, activation='relu')(decoded_hidden_1)
-    decoded = Dense(dimensions, activation='relu')(decoded_hidden_2)
+    decoded = Dense(dimensions, activation='linear')(decoded_hidden_2)
     decoder = Model(decoder_input, decoded)
 
     auto_input_layer = Input(shape=(dimensions,))
