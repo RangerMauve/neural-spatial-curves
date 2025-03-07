@@ -15,8 +15,8 @@ tf.config.set_visible_devices(
     tf.config.list_physical_devices('CPU')[:cpu_count], 'CPU')
 
 dimensions = 2
-hidden_size_1 = 64
-hidden_size_2 = 32
+hidden_size_1 = 128
+hidden_size_2 = 64
 encoding_size = 1
 
 # Generate random training data (x-y coordinates)
