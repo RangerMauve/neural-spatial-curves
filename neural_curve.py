@@ -1,11 +1,18 @@
 import tensorflow as tf
 import numpy as np
-from tensorflow.keras.models import Model
+from tensorflow.keras.models import Model, Sequential
 from tensorflow.keras.layers import Input, Dense
 
 # Set random seed for reproducibility
 np.random.seed(42)
 tf.random.set_seed(42)
+
+
+# Set the number of CPU cores to use for training
+# I do `CPU count - 2` to let other processes run
+cpu_count = 14  # You can adjust this based on your system's capabilities
+tf.config.set_visible_devices(
+    tf.config.list_physical_devices('CPU')[:cpu_count], 'CPU')
 
 dimensions = 2
 hidden_size_1 = 64
@@ -15,24 +22,25 @@ encoding_size = 1
 # Generate random training data (x-y coordinates)
 X = np.random.rand(100000, 2)
 
-# Define the autoencoder model
-input_layer = Input(shape=(dimensions,))
-encoded_hidden_1 = Dense(hidden_size_1, activation='relu')(input_layer)
-encoded_hidden_2 = Dense(
-    hidden_size_2, activation='relu')(encoded_hidden_1)
-encoded = Dense(encoding_size, activation='linear')(encoded_hidden_2)
+# Define encoder from x-y to latent space
+encoder = Sequential()
+encoder.add(Input((dimensions,)))
+encoder.add(Dense(hidden_size_1, activation='relu'))
+encoder.add(Dense(hidden_size_2, activation='relu'))
+encoder.add(Dense(encoding_size, activation='linear'))
 
-encoder = Model(input_layer, encoded)
+# Define decoder from latent space to x-y
+decoder = Sequential()
+decoder.add(Input((encoding_size,)))
+decoder.add(Dense(hidden_size_2, activation='relu'))
+decoder.add(Dense(hidden_size_1, activation='relu'))
+decoder.add(Dense(dimensions, activation='linear'))
 
-decoder_input = Input(shape=(encoding_size,))
-decoded_hidden_1 = Dense(hidden_size_2, activation='relu')(decoder_input)
-decoded_hidden_2 = Dense(
-    hidden_size_1, activation='relu')(decoded_hidden_1)
-decoded = Dense(dimensions, activation='linear')(decoded_hidden_2)
-decoder = Model(decoder_input, decoded)
-
+# Combine encoder and decoder into the autoencoder
 auto_input_layer = Input(shape=(dimensions,))
-autoencoder = Model(auto_input_layer, decoder(encoder(auto_input_layer)))
+encoded = encoder(auto_input_layer)
+decoded = decoder(encoded)
+autoencoder = Model(auto_input_layer, decoded)
 
 # Compile the model
 autoencoder.compile(optimizer='adam', loss='mean_squared_error')
@@ -40,8 +48,7 @@ autoencoder.compile(optimizer='adam', loss='mean_squared_error')
 # Train the model
 history = autoencoder.fit(X, X, epochs=300, batch_size=32)
 
-# Train the autoencoder
-autoencoder, encoder, decoder = create_and_train_autoencoder()
+# Show a summary
 autoencoder.summary()
 decoder.save('decoder.keras')
 encoder.save('encoder.keras')
