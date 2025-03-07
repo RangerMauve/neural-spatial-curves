@@ -1,7 +1,7 @@
 import tensorflow as tf
 import numpy as np
 from tensorflow.keras.models import Model, Sequential
-from tensorflow.keras.layers import Input, Dense, BatchNormalization, Activation
+from tensorflow.keras.layers import Input, Dense, Dropout, BatchNormalization, Activation
 
 # Set random seed for reproducibility
 np.random.seed(42)
@@ -22,26 +22,30 @@ encoding_size = 1
 # Generate random training data (x-y coordinates)
 X = np.random.rand(100000, 2)
 
-# Define encoder from x-y to latent space with BatchNormalization
+# Define encoder from x-y to latent space with BatchNormalization and Dropout
 encoder = Sequential()
 encoder.add(Input((dimensions,)))
 encoder.add(Dense(hidden_size_1))
 encoder.add(BatchNormalization())
 encoder.add(Activation('relu'))
+encoder.add(Dropout(0.5))  # Add dropout for regularization
 encoder.add(Dense(hidden_size_2))
 encoder.add(BatchNormalization())
 encoder.add(Activation('relu'))
+encoder.add(Dropout(0.5))
 encoder.add(Dense(encoding_size, activation='linear'))
 
-# Define decoder from latent space to x-y with BatchNormalization
+# Define decoder from latent space to x-y with BatchNormalization and Dropout
 decoder = Sequential()
 decoder.add(Input((encoding_size,)))
 decoder.add(Dense(hidden_size_2))
 decoder.add(BatchNormalization())
 decoder.add(Activation('relu'))
+decoder.add(Dropout(0.5))  # Add dropout for regularization
 decoder.add(Dense(hidden_size_1))
 decoder.add(BatchNormalization())
 decoder.add(Activation('relu'))
+decoder.add(Dropout(0.5))
 decoder.add(Dense(dimensions, activation='linear'))
 
 # Combine encoder and decoder into the autoencoder
