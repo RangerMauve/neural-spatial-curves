@@ -46,7 +46,7 @@ autoencoder = Model(auto_input_layer, decoded)
 autoencoder.compile(optimizer='adam', loss='mean_squared_error')
 
 # Train the model
-history = autoencoder.fit(X, X, epochs=300, batch_size=32)
+history = autoencoder.fit(X, X, epochs=300, batch_size=256)
 
 # Show a summary
 autoencoder.summary()
