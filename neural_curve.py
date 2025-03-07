@@ -7,13 +7,6 @@ from tensorflow.keras.layers import Input, Dense, Dropout, BatchNormalization, A
 np.random.seed(42)
 tf.random.set_seed(42)
 
-
-# Set the number of CPU cores to use for training
-# I do `CPU count - 2` to let other processes run
-cpu_count = 14  # You can adjust this based on your system's capabilities
-tf.config.set_visible_devices(
-    tf.config.list_physical_devices('CPU')[:cpu_count], 'CPU')
-
 dimensions = 2
 hidden_size_1 = 128
 hidden_size_2 = 64
@@ -28,11 +21,9 @@ encoder.add(Input((dimensions,)))
 encoder.add(Dense(hidden_size_1))
 encoder.add(BatchNormalization())
 encoder.add(Activation('relu'))
-encoder.add(Dropout(0.5))  # Add dropout for regularization
 encoder.add(Dense(hidden_size_2))
 encoder.add(BatchNormalization())
 encoder.add(Activation('relu'))
-encoder.add(Dropout(0.5))
 encoder.add(Dense(encoding_size, activation='linear'))
 
 # Define decoder from latent space to x-y with BatchNormalization and Dropout
@@ -41,11 +32,9 @@ decoder.add(Input((encoding_size,)))
 decoder.add(Dense(hidden_size_2))
 decoder.add(BatchNormalization())
 decoder.add(Activation('relu'))
-decoder.add(Dropout(0.5))  # Add dropout for regularization
 decoder.add(Dense(hidden_size_1))
 decoder.add(BatchNormalization())
 decoder.add(Activation('relu'))
-decoder.add(Dropout(0.5))
 decoder.add(Dense(dimensions, activation='linear'))
 
 # Combine encoder and decoder into the autoencoder
