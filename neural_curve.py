@@ -2,6 +2,7 @@ import tensorflow as tf
 import numpy as np
 from tensorflow.keras.models import Model, Sequential
 from tensorflow.keras.layers import Input, Dense, Dropout, BatchNormalization, Activation
+from tensorflow.keras.callbacks import ReduceLROnPlateau
 
 # Set random seed for reproducibility
 np.random.seed(42)
@@ -53,8 +54,22 @@ autoencoder = Model(auto_input_layer, decoded)
 # Compile the model
 autoencoder.compile(optimizer='adam', loss='mae')
 
+# Define the learning rate scheduler
+lr_reducer = ReduceLROnPlateau(
+    monitor='val_loss',  # Monitor validation loss
+    # Number of epochs with no improvement after which learning rate is reduced
+    patience=3,
+    factor=0.5,         # Factor by which the learning rate will be reduced
+    min_lr=1e-6         # Minimum learning rate to prevent it from becoming too low
+)
+
+
 # Train the model
-history = autoencoder.fit(X, X, epochs=300, batch_size=256)
+history = autoencoder.fit(X, X,
+                          epochs=300,
+                          batch_size=256,
+                          callbacks=[lr_reducer]
+                          )
 
 # Show a summary
 autoencoder.summary()
