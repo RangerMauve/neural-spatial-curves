@@ -8,8 +8,9 @@ np.random.seed(42)
 tf.random.set_seed(42)
 
 dimensions = 2
-hidden_size_1 = 128
-hidden_size_2 = 64
+hidden_size_1 = 256
+hidden_size_2 = 128
+hidden_size_3 = 64
 encoding_size = 1
 
 # Generate random training data (x-y coordinates)
@@ -24,11 +25,17 @@ encoder.add(Activation('relu'))
 encoder.add(Dense(hidden_size_2))
 encoder.add(BatchNormalization())
 encoder.add(Activation('relu'))
+encoder.add(Dense(hidden_size_3))
+encoder.add(BatchNormalization())
+encoder.add(Activation('relu'))
 encoder.add(Dense(encoding_size, activation='linear'))
 
 # Define decoder from latent space to x-y with BatchNormalization and Dropout
 decoder = Sequential()
 decoder.add(Input((encoding_size,)))
+decoder.add(Dense(hidden_size_3))
+decoder.add(BatchNormalization())
+decoder.add(Activation('relu'))
 decoder.add(Dense(hidden_size_2))
 decoder.add(BatchNormalization())
 decoder.add(Activation('relu'))
