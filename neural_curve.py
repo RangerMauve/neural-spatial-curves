@@ -8,9 +8,9 @@ np.random.seed(42)
 tf.random.set_seed(42)
 
 dimensions = 2
-hidden_size_1 = 256
-hidden_size_2 = 128
-hidden_size_3 = 64
+hidden_size_1 = 512
+hidden_size_2 = 256
+hidden_size_3 = 128
 encoding_size = 1
 
 # Generate random training data (x-y coordinates)
