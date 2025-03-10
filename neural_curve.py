@@ -56,17 +56,17 @@ autoencoder.compile(optimizer='adam', loss='mae')
 
 # Define the learning rate scheduler
 lr_reducer = ReduceLROnPlateau(
-    monitor='val_loss',  # Monitor validation loss
+    monitor='loss',  # Monitor validation loss
     # Number of epochs with no improvement after which learning rate is reduced
-    patience=3,
-    factor=0.5,         # Factor by which the learning rate will be reduced
-    min_lr=1e-6         # Minimum learning rate to prevent it from becoming too low
+    patience=6,
+    factor=0.9,         # Factor by which the learning rate will be reduced
+    min_lr=1e-8         # Minimum learning rate to prevent it from becoming too low
 )
 
 
 # Train the model
 history = autoencoder.fit(X, X,
-                          epochs=300,
+                          epochs=1024,
                           batch_size=256,
                           callbacks=[lr_reducer]
                           )
