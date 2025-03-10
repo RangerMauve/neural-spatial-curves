@@ -15,7 +15,7 @@ def predict(autoencoder, input_data):
 
 
 # Generate test data
-X_test = np.random.rand(300, 2)  # 5 samples for testing
+X_test = np.random.rand(512, 2)  # samples for testing
 
 # Use the trained autoencoder to make predictions
 predicted = predict(autoencoder, X_test)
